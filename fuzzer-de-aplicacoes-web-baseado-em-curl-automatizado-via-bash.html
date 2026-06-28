@@ -1,0 +1,243 @@
+<!DOCTYPE html><html lang="pt-br"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Fuzzer de aplicações web baseado em CURL automatizado via BASH - Infra + Sec</title><meta name="description" content="Após ter usado por um bom tempo o FFUF percebi algumas limitações da ferramenta para a minha maneira de coletar informações em aplicações web. Resolvi que deveria desenvolver meu próprio fuzzer, após alguns meses de pesquisa cheguei a versão atual que segue em teste. Utilizando&hellip;"><meta name="generator" content="Publii Open-Source CMS for Static Site"><link rel="stylesheet" href="https://nathan.tec.br/media/plugins/syntaxHighlighter/prism-black.css"><script data-goatcounter="https://nathantecbr.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script><link rel="canonical" href="https://nathan.tec.br/fuzzer-de-aplicacoes-web-baseado-em-curl-automatizado-via-bash.html"><link rel="alternate" type="application/atom+xml" href="https://nathan.tec.br/feed.xml" title="Infra + Sec - RSS"><link rel="alternate" type="application/json" href="https://nathan.tec.br/feed.json" title="Infra + Sec - JSON"><meta property="og:title" content="Fuzzer de aplicações web baseado em CURL automatizado via BASH"><meta property="og:site_name" content="Infra + Sec"><meta property="og:description" content="Após ter usado por um bom tempo o FFUF percebi algumas limitações da ferramenta para a minha maneira de coletar informações em aplicações web. Resolvi que deveria desenvolver meu próprio fuzzer, após alguns meses de pesquisa cheguei a versão atual que segue em teste. Utilizando&hellip;"><meta property="og:url" content="https://nathan.tec.br/fuzzer-de-aplicacoes-web-baseado-em-curl-automatizado-via-bash.html"><meta property="og:type" content="article"><link rel="stylesheet" href="https://nathan.tec.br/assets/css/style.css?v=a0ba884548820066dfadd8416036abba"><script type="application/ld+json">{"@context":"http://schema.org","@type":"Article","mainEntityOfPage":{"@type":"WebPage","@id":"https://nathan.tec.br/fuzzer-de-aplicacoes-web-baseado-em-curl-automatizado-via-bash.html"},"headline":"Fuzzer de aplicações web baseado em CURL automatizado via BASH","datePublished":"2026-06-28T14:38-04:00","dateModified":"2026-06-28T14:38-04:00","description":"Após ter usado por um bom tempo o FFUF percebi algumas limitações da ferramenta para a minha maneira de coletar informações em aplicações web. Resolvi que deveria desenvolver meu próprio fuzzer, após alguns meses de pesquisa cheguei a versão atual que segue em teste. Utilizando&hellip;","author":{"@type":"Person","name":"Nathan Henrique","url":"https://nathan.tec.br/authors/nathan-henrique/"},"publisher":{"@type":"Organization","name":"Nathan Henrique"}}</script><noscript><style>img[loading] {
+                    opacity: 1;
+                }</style></noscript></head><body class="page-template"><header class="top js-header"><a class="logo" href="https://nathan.tec.br/">Infra + Sec</a></header><main class="page"><article class="content"><div class="hero hero--noimage"><header class="hero__content"><div class="wrapper"><h1>Fuzzer de aplicações web baseado em CURL automatizado via BASH</h1></div></header></div><div class="entry-wrapper content__entry"><p>Após ter usado por um bom tempo o FFUF percebi algumas limitações da ferramenta para a minha maneira de coletar informações em aplicações web. Resolvi que deveria desenvolver meu próprio fuzzer, após alguns meses de pesquisa cheguei a versão atual que segue em teste.</p><p>Utilizando curl-impersonate como forma de bypass de rate limit e bloqueio baseado em fingerprint. Atualmente o código precisa ser polido e ter mais incrementos de funcionalidades como identificação de códigos 429 e conexão instável.<br></p><pre class="language-bash"><code>#!/bin/bash
+
+curl_temp=$(mktemp)
+headers_out_temp=$(mktemp)
+
+fuzz() {
+  get_data() {
+    headers=()
+    if [ -n "$headers_file" ]; then
+      echo "{{{" &gt;&gt; "$headers_in"
+      while IFS= read -r h; do
+        headers+=(-H "$h")
+        echo "$h" &gt;&gt; "$headers_in"
+      done &lt; "$headers_file"
+      echo "}}}" &gt;&gt; "$headers_in" 
+    fi
+    if [ -n "$headers_in_temp" ]; then
+      echo "{{{" &gt;&gt; "$headers_in"
+      while IFS= read -r h; do
+        headers+=(-H "$h")
+        echo "$h" &gt;&gt; "$headers_in"
+      done &lt;&lt;&lt; "$headers_in_temp"
+      echo "}}}" &gt;&gt; "$headers_in" 
+    fi
+    fuzz_engine() {
+      "$curl_type" -s -L -X "$method" \
+      --max-time 5 --connect-timeout 3 \
+      --max-redirs 5 --limit-rate 100k \
+      --path-as-is -o $curl_temp \
+      "${headers[@]}" \
+      -D "$headers_out_temp" \
+      -w \
+"%{response_code}\n\
+%{url}\n\
+%{url_effective}\n\
+%{method}\n\
+%{scheme}\n\
+%{num_redirects}\n\
+%{redirect_url}\n\
+%{num_headers}\n\
+%{size_header}\n\
+%{size_request}\n\
+%{size_download}\n\
+%{size_upload}\n\
+%{content_type}\n\
+%{remote_ip}\n\
+%{remote_port}\n\
+%{local_ip}\n\
+%{local_port}\n\
+%{http_version}\n\
+%{num_connects}\n\
+%{conn_id}\n\
+%{time_namelookup}\n\
+%{time_connect}\n\
+%{time_appconnect}\n\
+%{time_pretransfer}\n\
+%{time_starttransfer}\n\
+%{time_redirect}\n\
+%{time_total}\n\
+%{ssl_verify_result}\n\
+%{exitcode}\n" \
+      "$url"
+  }
+  fuzz_engine
+  }
+  get_data $curl_type $method $url $headers_file
+   
+  output_hash=$(head -c 256 $curl_temp | md5sum | awk '{print $1}')
+  echo $output_hash
+  echo "$payload"
+  echo "{{{" &gt;&gt; $headers_out 
+  cat "$headers_out_temp" | tr -d '\r' &gt;&gt; $headers_out
+  echo "}}}" &gt;&gt; $headers_out 
+  rm $curl_temp
+  rm $headers_out_temp
+}
+  curl_type=$1
+  method=$2
+  url=$3
+  headers_file=$4
+  headers_in_temp=$5
+  payload=$6
+  headers_in=$8
+  headers_out=$9
+echo "{{{" &gt;&gt; "$7"
+fuzz &gt;&gt; $7
+echo "}}}" &gt;&gt; "$7"
+
+exit 0</code></pre><p>Atualmente o código funciona como um motor de fuzzer gerando dados em campos separados por "{{{" "}}}".</p><p>Há também um script que valida o arquivo de resultados do scan e importa tudo para o banco de dados SQL.</p><pre class="language-bash"><code>#!/bin/bash
+
+echo "Arquivo atual: $1"
+
+verificador () {
+  epoch_start=$(head -n1 $1)
+  epoch_end=$(tail -n1 $1)
+
+  if date -d "@$epoch_start" &gt;/dev/null 2&gt;&1; then
+    echo "Epoch start [ OK ] Valor: $epoch_start"
+  else
+    echo "Epoch start [ ERRO ] Valor: $epoch_start"
+    echo "Arquivo: $1"
+    exit 1
+    sleep 1
+  fi
+  if date -d "@$epoch_end" &gt;/dev/null 2&gt;&1; then
+    echo "Epoch end [ OK ] Valor: $epoch_end"
+  else
+    echo "Epoch end [ ERRO ] Valor: $epoch_end"
+    echo "Arquivo: $1"
+    exit 1
+    sleep 1
+  fi
+
+  line_object_start=2
+  line_object_end=34
+
+  while true; do
+    objeto=$(sed -n "$line_object_start","$line_object_end"p "$1")
+    open_object=$(printf '%s\n' "$objeto" | head -n 1)
+    close_object=$(printf '%s\n' "$objeto" | tail -n 1)
+    if ! [[ $open_object == "{{{" ]]; then
+      echo "Objeto linha: $line_object_start [ ERROR ]"
+      echo "Arquivo: $1"
+      exit 1
+    fi
+    if ! [[ $close_object == "}}}" ]]; then
+      echo "Objeto linha: $line_object_end [ ERROR ]"
+      echo "Arquivo: $1"
+      exit 1
+    fi
+    last_line=$line_object_end
+    verify_end_line=$((last_line + 1))
+    get_end_line=$(sed -n "$verify_end_line"p "$1")
+    if [[ $get_end_line == $epoch_end ]]; then
+      echo "Arquivo [ OK ]"
+      exit 0
+    fi
+    ((line_object_start += 33))
+    ((line_object_end += 33))
+  done 
+}
+
+extract_object_info () {
+  # acesa o banco e pega o index
+  id=$(sqlite3 "$2" "SELECT fuzz_index_id FROM metadata LIMIT 1;")
+  ((id += 1))
+  request=1
+
+  line_start=3
+  line_end=33
+
+  line_to_stop=$(( $(wc -l &lt; "$1") - 2 ))
+
+  while true; do
+
+    mapfile -t obj &lt; &lt;(sed -n "${line_start},${line_end}p" "$1")
+    sql_insert_obj "$2" 
+    if [[ $line_end == $line_to_stop ]]; then
+      sqlite3 "$2" "
+      UPDATE metadata
+      SET fuzz_index_id = $id;
+      "
+      exit 0
+    fi
+    ((line_start += 33))
+    ((line_end += 33))
+    ((request += 1))  
+  done
+}
+
+sql_insert_obj() {
+    local db="$1"
+
+    python3 - "$db" "$id" "$epoch_start" "$epoch_end" "$request" "${obj[@]}" &lt;&lt;'PY'
+import sqlite3
+import sys
+
+conn = sqlite3.connect(sys.argv[1])
+
+conn.execute("""
+INSERT INTO fuzz_out (
+    id,
+    epoch_start,
+    epoch_end,
+    request,
+    response_code,
+    url,
+    url_effective,
+    method,
+    scheme,
+    num_redirects,
+    redirect_url,
+    num_headers,
+    size_header,
+    size_request,
+    size_download,
+    size_upload,
+    content_type,
+    remote_ip,
+    remote_port,
+    local_ip,
+    local_port,
+    http_version,
+    num_connects,
+    conn_id,
+    time_namelookup,
+    time_connect,
+    time_appconnect,
+    time_pretransfer,
+    time_starttransfer,
+    time_redirect,
+    time_total,
+    ssl_verify_result,
+    exitcode,
+    output_hash,
+    payload
+)
+VALUES (
+    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+    ?, ?, ?, ?, ?
+)
+""", tuple(sys.argv[2:]))
+
+conn.commit()
+conn.close()
+PY
+}
+
+verificador $1
+</code></pre><p>Adiante irei desenvolver um modelo de Machine Learning baseado em Isolation Forest para a analise de anomalias e também um modelo baseado em estatística básica. Todo esse fuzzer gera uma quantidade de dados enorme e o processamento se torna uma tarefa árdua.</p></div></article></main><footer class="footer"><div class="wrapper"><div class="footer__copyright">Powered by Publii</div><button id="backToTop" class="footer__bttop" aria-label="Back to top" title="Back to top"><svg width="20" height="20"><use xlink:href="https://nathan.tec.br/assets/svg/svg-map.svg#toparrow"/></svg></button></div></footer><script defer="defer" src="https://nathan.tec.br/assets/js/scripts.min.js?v=dafec4f87fead6718cb125f0b0fc8441"></script><script>window.publiiThemeMenuConfig={mobileMenuMode:'sidebar',animationSpeed:300,submenuWidth: 'auto',doubleClickTime:500,mobileMenuExpandableSubmenus:true,relatedContainerForOverlayMenuSelector:'.top'};</script><script>var images = document.querySelectorAll('img[loading]');
+        for (var i = 0; i < images.length; i++) {
+            if (images[i].complete) {
+                images[i].classList.add('is-loaded');
+            } else {
+                images[i].addEventListener('load', function () {
+                    this.classList.add('is-loaded');
+                }, false);
+            }
+        }</script><script defer="defer" src="https://nathan.tec.br/media/plugins/syntaxHighlighter/prism.js"></script></body></html>
