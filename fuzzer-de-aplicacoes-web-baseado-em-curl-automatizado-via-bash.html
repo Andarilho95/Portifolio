@@ -1,6 +1,6 @@
-<!DOCTYPE html><html lang="pt-br"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Fuzzer de aplicações web baseado em CURL automatizado via BASH - Infra + Sec</title><meta name="description" content="Após ter usado por um bom tempo o FFUF percebi algumas limitações da ferramenta para a minha maneira de coletar informações em aplicações web. Resolvi que deveria desenvolver meu próprio fuzzer, após alguns meses de pesquisa cheguei a versão atual que segue em teste. Utilizando&hellip;"><meta name="generator" content="Publii Open-Source CMS for Static Site"><link rel="stylesheet" href="https://nathan.tec.br/media/plugins/syntaxHighlighter/prism-black.css"><script data-goatcounter="https://nathantecbr.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script><link rel="canonical" href="https://nathan.tec.br/fuzzer-de-aplicacoes-web-baseado-em-curl-automatizado-via-bash.html"><link rel="alternate" type="application/atom+xml" href="https://nathan.tec.br/feed.xml" title="Infra + Sec - RSS"><link rel="alternate" type="application/json" href="https://nathan.tec.br/feed.json" title="Infra + Sec - JSON"><meta property="og:title" content="Fuzzer de aplicações web baseado em CURL automatizado via BASH"><meta property="og:site_name" content="Infra + Sec"><meta property="og:description" content="Após ter usado por um bom tempo o FFUF percebi algumas limitações da ferramenta para a minha maneira de coletar informações em aplicações web. Resolvi que deveria desenvolver meu próprio fuzzer, após alguns meses de pesquisa cheguei a versão atual que segue em teste. Utilizando&hellip;"><meta property="og:url" content="https://nathan.tec.br/fuzzer-de-aplicacoes-web-baseado-em-curl-automatizado-via-bash.html"><meta property="og:type" content="article"><link rel="stylesheet" href="https://nathan.tec.br/assets/css/style.css?v=a0ba884548820066dfadd8416036abba"><script type="application/ld+json">{"@context":"http://schema.org","@type":"Article","mainEntityOfPage":{"@type":"WebPage","@id":"https://nathan.tec.br/fuzzer-de-aplicacoes-web-baseado-em-curl-automatizado-via-bash.html"},"headline":"Fuzzer de aplicações web baseado em CURL automatizado via BASH","datePublished":"2026-06-28T14:38-04:00","dateModified":"2026-06-28T14:38-04:00","description":"Após ter usado por um bom tempo o FFUF percebi algumas limitações da ferramenta para a minha maneira de coletar informações em aplicações web. Resolvi que deveria desenvolver meu próprio fuzzer, após alguns meses de pesquisa cheguei a versão atual que segue em teste. Utilizando&hellip;","author":{"@type":"Person","name":"Nathan Henrique","url":"https://nathan.tec.br/authors/nathan-henrique/"},"publisher":{"@type":"Organization","name":"Nathan Henrique"}}</script><noscript><style>img[loading] {
+<!DOCTYPE html><html lang="pt-br"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Fuzzer de aplicações web baseado em CURL automatizado via BASH e Python - Nathan Sec</title><meta name="description" content="Após ter usado por um bom tempo o FFUF percebi algumas limitações da ferramenta para a minha maneira de coletar informações em aplicações web. Resolvi&hellip;"><meta name="generator" content="Publii Open-Source CMS for Static Site"><link rel="stylesheet" href="https://nathan.tec.br/media/plugins/syntaxHighlighter/prism-black.css"><script data-goatcounter="https://nathantecbr.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script><link rel="canonical" href="https://nathan.tec.br/fuzzer-de-aplicacoes-web-baseado-em-curl-automatizado-via-bash.html"><link rel="alternate" type="application/atom+xml" href="https://nathan.tec.br/feed.xml" title="Nathan Sec - RSS"><link rel="alternate" type="application/json" href="https://nathan.tec.br/feed.json" title="Nathan Sec - JSON"><meta property="og:title" content="Fuzzer de aplicações web baseado em CURL automatizado via BASH e Python"><meta property="og:site_name" content="Nathan Sec"><meta property="og:description" content="Após ter usado por um bom tempo o FFUF percebi algumas limitações da ferramenta para a minha maneira de coletar informações em aplicações web. Resolvi&hellip;"><meta property="og:url" content="https://nathan.tec.br/fuzzer-de-aplicacoes-web-baseado-em-curl-automatizado-via-bash.html"><meta property="og:type" content="article"><link rel="stylesheet" href="https://nathan.tec.br/assets/css/style.css?v=e19cced6341d15e84c3d202e5e386440"><script type="application/ld+json">{"@context":"http://schema.org","@type":"Article","mainEntityOfPage":{"@type":"WebPage","@id":"https://nathan.tec.br/fuzzer-de-aplicacoes-web-baseado-em-curl-automatizado-via-bash.html"},"headline":"Fuzzer de aplicações web baseado em CURL automatizado via BASH e Python","datePublished":"2026-06-28T14:38-04:00","dateModified":"2026-07-14T23:48-04:00","description":"Após ter usado por um bom tempo o FFUF percebi algumas limitações da ferramenta para a minha maneira de coletar informações em aplicações web. Resolvi&hellip;","author":{"@type":"Person","name":"Nathan Henrique","url":"https://nathan.tec.br/authors/nathan-henrique/"},"publisher":{"@type":"Organization","name":"Nathan Henrique"}}</script><noscript><style>img[loading] {
                     opacity: 1;
-                }</style></noscript></head><body class="page-template"><header class="top js-header"><a class="logo" href="https://nathan.tec.br/">Infra + Sec</a></header><main class="page"><article class="content"><div class="hero hero--noimage"><header class="hero__content"><div class="wrapper"><h1>Fuzzer de aplicações web baseado em CURL automatizado via BASH</h1></div></header></div><div class="entry-wrapper content__entry"><p>Após ter usado por um bom tempo o FFUF percebi algumas limitações da ferramenta para a minha maneira de coletar informações em aplicações web. Resolvi que deveria desenvolver meu próprio fuzzer, após alguns meses de pesquisa cheguei a versão atual que segue em teste.</p><p>Utilizando curl-impersonate como forma de bypass de rate limit e bloqueio baseado em fingerprint. Atualmente o código precisa ser polido e ter mais incrementos de funcionalidades como identificação de códigos 429 e conexão instável.<br></p><pre class="language-bash"><code>#!/bin/bash
+                }</style></noscript></head><body class="page-template"><div class="container container--center"><header class="header"><div class="header__logo"><a class="logo" href="https://nathan.tec.br/">Nathan Sec</a></div></header><main class="content page"><article class="post"><header><h1 class="post__title">Fuzzer de aplicações web baseado em CURL automatizado via BASH e Python</h1></header><div class="post__entry"><p>Após ter usado por um bom tempo o FFUF percebi algumas limitações da ferramenta para a minha maneira de coletar informações em aplicações web. Resolvi que deveria desenvolver meu próprio fuzzer, após alguns meses de pesquisa cheguei a versão atual que segue em teste.</p><p>Utilizando curl-impersonate como forma de bypass de rate limit e bloqueio baseado em fingerprint. Atualmente o código precisa ser polido e ter mais incrementos de funcionalidades como identificação de códigos 429, conexão instável e over head.</p><figure class="post__image post__image--center"><img loading="lazy" src="https://nathan.tec.br/media/posts/7/Screenshot-From-2026-07-14-22-52-09.png" height="523" width="1344" alt="" sizes="(min-width: 920px) 703px, (min-width: 700px) calc(82vw - 35px), calc(100vw - 81px)" srcset="https://nathan.tec.br/media/posts/7/responsive/Screenshot-From-2026-07-14-22-52-09-xs.png 300w, https://nathan.tec.br/media/posts/7/responsive/Screenshot-From-2026-07-14-22-52-09-sm.png 480w, https://nathan.tec.br/media/posts/7/responsive/Screenshot-From-2026-07-14-22-52-09-md.png 768w, https://nathan.tec.br/media/posts/7/responsive/Screenshot-From-2026-07-14-22-52-09-lg.png 1024w"></figure><p>Esse é o motor de fuzzing recebendo os dados para realizar a requisição e retornando os dados da resposta.</p><pre class="language-bash"><code>#!/bin/bash
 
 curl_temp=$(mktemp)
 headers_out_temp=$(mktemp)
@@ -88,7 +88,7 @@ echo "{{{" &gt;&gt; "$7"
 fuzz &gt;&gt; $7
 echo "}}}" &gt;&gt; "$7"
 
-exit 0</code></pre><p>Atualmente o código funciona como um motor de fuzzer gerando dados em campos separados por "{{{" "}}}".</p><p>Há também um script que valida o arquivo de resultados do scan e importa tudo para o banco de dados SQL.</p><pre class="language-bash"><code>#!/bin/bash
+exit 0</code></pre><p>Há também um script que valida o arquivo de resultados do scan e importa tudo para o banco de dados SQL. Essa é a nova versão utilizando Bash e Python a versão anterior toda desenvolvida em Bash era extremamente lenta .</p><pre class="language-bash"><code>#!/bin/bash
 
 echo "Arquivo atual: $1"
 
@@ -102,7 +102,7 @@ verificador () {
     echo "Epoch start [ ERRO ] Valor: $epoch_start"
     echo "Arquivo: $1"
     exit 1
-    sleep 1
+#    sleep 1
   fi
   if date -d "@$epoch_end" &gt;/dev/null 2&gt;&1; then
     echo "Epoch end [ OK ] Valor: $epoch_end"
@@ -110,76 +110,91 @@ verificador () {
     echo "Epoch end [ ERRO ] Valor: $epoch_end"
     echo "Arquivo: $1"
     exit 1
-    sleep 1
+#    sleep 1
   fi
 
-  line_object_start=2
-  line_object_end=34
+  mapfile -t linhas &lt; "$1"
 
-  while true; do
-    objeto=$(sed -n "$line_object_start","$line_object_end"p "$1")
-    open_object=$(printf '%s\n' "$objeto" | head -n 1)
-    close_object=$(printf '%s\n' "$objeto" | tail -n 1)
-    if ! [[ $open_object == "{{{" ]]; then
-      echo "Objeto linha: $line_object_start [ ERROR ]"
-      echo "Arquivo: $1"
-      exit 1
-    fi
-    if ! [[ $close_object == "}}}" ]]; then
-      echo "Objeto linha: $line_object_end [ ERROR ]"
-      echo "Arquivo: $1"
-      exit 1
-    fi
-    last_line=$line_object_end
-    verify_end_line=$((last_line + 1))
-    get_end_line=$(sed -n "$verify_end_line"p "$1")
-    if [[ $get_end_line == $epoch_end ]]; then
-      echo "Arquivo [ OK ]"
-      exit 0
-    fi
-    ((line_object_start += 33))
-    ((line_object_end += 33))
-  done 
-}
-
-extract_object_info () {
-  # acesa o banco e pega o index
-  id=$(sqlite3 "$2" "SELECT fuzz_index_id FROM metadata LIMIT 1;")
-  ((id += 1))
-  request=1
-
-  line_start=3
-  line_end=33
-
-  line_to_stop=$(( $(wc -l &lt; "$1") - 2 ))
+  line_object_start=1
+  line_object_end=33
 
   while true; do
 
-    mapfile -t obj &lt; &lt;(sed -n "${line_start},${line_end}p" "$1")
-    sql_insert_obj "$2" 
-    if [[ $line_end == $line_to_stop ]]; then
-      sqlite3 "$2" "
-      UPDATE metadata
-      SET fuzz_index_id = $id;
-      "
-      exit 0
-    fi
-    ((line_start += 33))
-    ((line_end += 33))
-    ((request += 1))  
+      open_object="${linhas[line_object_start]}"
+      close_object="${linhas[line_object_end]}"
+
+      if [[ $open_object != "{{{" ]]; then
+          echo "Objeto inválido"
+          exit 1
+      fi
+
+      if [[ $close_object != "}}}" ]]; then
+          echo "Objeto inválido"
+          exit 1
+      fi
+
+      verify_end_line=$((line_object_end + 1))
+      get_end_line="${linhas[verify_end_line]}"
+
+      if [[ $get_end_line == "$epoch_end" ]]; then
+          echo "Arquivo OK"
+          return
+      fi
+
+      ((line_object_start += 33))
+      ((line_object_end += 33))
+
   done
 }
 
-sql_insert_obj() {
-    local db="$1"
+get_index_id () {
+  id_old=$(sqlite3 "$1" "SELECT fuzz_index_id FROM metadata LIMIT 1;")
+  id_new=$id_old
+  ((id_new += 1))
+  echo "$id_old index id atual"
+  echo "$id_new index id novo do banco"
+}
 
-    python3 - "$db" "$id" "$epoch_start" "$epoch_end" "$request" "${obj[@]}" &lt;&lt;'PY'
+extract_data () {
+  python3 ~/ethical-hacking/scripts/fuzzer2/data-importer.py "$2" "$id_new" "$epoch_start" "$epoch_end" &lt; "$1"
+
+}
+
+runner () {
+  request=1 # conta o request atual
+  line_start=2 # linha inicial dos dados do fuzzing
+  line_to_stop=$(( $(wc -l &lt; "$2") - 33 )) # pega o total de linhas menos 2
+  {
+  echo "BEGIN;" 
+  while true; do
+  if [[ $line_start == $line_to_stop ]]; then
+    break
+  fi
+  ((line_start += 33))
+  ((request += 1)) 
+  done
+  echo "COMMIT;"
+} | sqlite3 "$1" 
+}
+
+verificador $1
+get_index_id $2 # pega o index_id do argumento do banco
+extract_data $1 $2
+runner $2 $1
+sqlite3 "$2" "
+  UPDATE metadata
+  SET fuzz_index_id = $id_new;
+  "
+exit 0</code></pre><p id="motor-de-importacao-todo-em-python">Motor de importação todo em Python</p><pre class="language-python"><code>import sys
+import time
 import sqlite3
-import sys
 
-conn = sqlite3.connect(sys.argv[1])
+db = sys.argv[1]
+id = sys.argv[2]
+epoch_start = sys.argv[3]
+epoch_end = sys.argv[4]
 
-conn.execute("""
+SQL = """
 INSERT INTO fuzz_out (
     id,
     epoch_start,
@@ -223,15 +238,180 @@ VALUES (
     ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
     ?, ?, ?, ?, ?
 )
-""", tuple(sys.argv[2:]))
+"""
 
+request=1
+data = sys.stdin.read().splitlines()
+line_start=2
+conn = sqlite3.connect(db)
+cursor = conn.cursor()
+cursor.execute("BEGIN")
+
+print(db, id, epoch_start, epoch_end)
+
+while True:
+    line_start += 33
+    obj = data[line_start:line_start + 31]
+    if len(obj) != 31:
+        break
+#    print(obj)
+    cursor.execute(
+            SQL,
+            (
+            id,
+            epoch_start,
+            epoch_end,
+            request,
+            *obj
+            )
+        )
+
+#    time.sleep(1) 
+    request += 1
 conn.commit()
-conn.close()
-PY
-}
+conn.close()</code></pre><p id="modelo-conceitual-de-analise-de-dados-via-estatisca-basica-e-machine-learning">Modelo inicial de analise de dados via estatística e machine learning</p><pre class="language-python"><code>import sqlite3
+import pandas as pd
+import sys
+from sklearn.ensemble import IsolationForest
 
-verificador $1
-</code></pre><p>Adiante irei desenvolver um modelo de Machine Learning baseado em Isolation Forest para a analise de anomalias e também um modelo baseado em estatística básica. Todo esse fuzzer gera uma quantidade de dados enorme e o processamento se torna uma tarefa árdua.</p></div></article></main><footer class="footer"><div class="wrapper"><div class="footer__copyright">Powered by Publii</div><button id="backToTop" class="footer__bttop" aria-label="Back to top" title="Back to top"><svg width="20" height="20"><use xlink:href="https://nathan.tec.br/assets/svg/svg-map.svg#toparrow"/></svg></button></div></footer><script defer="defer" src="https://nathan.tec.br/assets/js/scripts.min.js?v=dafec4f87fead6718cb125f0b0fc8441"></script><script>window.publiiThemeMenuConfig={mobileMenuMode:'sidebar',animationSpeed:300,submenuWidth: 'auto',doubleClickTime:500,mobileMenuExpandableSubmenus:true,relatedContainerForOverlayMenuSelector:'.top'};</script><script>var images = document.querySelectorAll('img[loading]');
+data_base = sys.argv[1]
+dominio = sys.argv[2] 
+metodo = sys.argv[3]
+
+conn = sqlite3.connect(data_base)
+
+df = pd.read_sql("""
+SELECT
+    id,
+    epoch_start,
+    epoch_end,
+    request,
+    response_code,
+    url,
+    url_effective,
+    method,
+    scheme,
+    num_redirects,
+    redirect_url,
+    num_headers,
+    size_header,
+    size_request,
+    size_download,
+    size_upload,
+    content_type,
+    remote_ip,
+    remote_port,
+    local_ip,
+    local_port,
+    http_version,
+    num_connects,
+    conn_id,
+    time_namelookup,
+    time_connect,
+    time_appconnect,
+    time_pretransfer,
+    time_starttransfer,
+    time_redirect,
+    time_total,
+    ssl_verify_result,
+    exitcode,
+    output_hash,
+    payload
+FROM fuzz_out
+WHERE url LIKE ?
+AND method = ?
+""", conn, params=(f"%{dominio}%", metodo))
+
+FEATURE_WEIGHTS = {
+    "num_redirects":      5.0,
+    "num_headers":        5.0,
+    "size_header":        5.0,
+    "size_download":      4.0,
+    "size_upload":        0.1,
+    "num_connects":       1.0,
+    "time_namelookup":    0.1,
+    "time_connect":       0.1,
+    "time_appconnect":    0.1,
+    "time_pretransfer":   0.1,
+    "time_starttransfer": 0.1,
+    "time_redirect":      0.1,
+    "time_total":         0.1,
+}
+for feature in FEATURE_WEIGHTS:
+    df[feature] = pd.to_numeric(df[feature], errors="coerce")
+
+X = df[list(FEATURE_WEIGHTS.keys())].copy()
+
+# Aplica os pesos
+for feature, weight in FEATURE_WEIGHTS.items():
+    X[feature] *= weight
+
+model = IsolationForest(
+    n_estimators=100,
+    contamination="auto",
+    random_state=42
+)
+
+# Treina
+model.fit(X)
+
+ml_score = model.decision_function(X)
+
+ml_score = ml_score.max() - ml_score
+ml_score = ml_score / ml_score.max()
+ml_score = (ml_score * 1000).astype(int)
+
+df["ml_score"] = ml_score
+
+def modelo_estatistico(df):
+
+    # Campos avaliados por frequência
+    colunas_freq = [
+        "response_code",
+        "output_hash",
+        "content_type",
+        "remote_ip",
+        "http_version"
+    ]
+    total = len(df)
+    for col in colunas_freq:
+
+        freq = df[col].value_counts(dropna=False)
+
+        df[f"rarity_{col}"] = (
+            1 - df[col].map(freq).fillna(0) / total
+        ) * 1000
+
+        df[f"rarity_{col}"] = (
+            df[f"rarity_{col}"]
+            .clip(0, 1000)
+            .astype(int)
+        )
+    RARITY_WEIGHTS = {
+        "response_code":        5.0,
+        "output_hash":          2.0,
+        "content_type":         2.0,
+        "remote_ip":            1.0,
+        "http_version":         1.0,
+    }
+
+    df["rarity_score"] = 0
+
+    for campo, peso in RARITY_WEIGHTS.items():
+
+        df["rarity_score"] += (
+            df[f"rarity_{campo}"] * peso
+        )
+        df["score_final"] = df["ml_score"] * df["rarity_score"]
+
+    print(
+        df[df["response_code"] != "000"]
+        .sort_values(by="score_final", ascending=False)
+        .head(50)
+        [["id", "epoch_start", "epoch_end", "request", "score_final"]]
+        .to_csv(index=False, header=False)
+    )
+</code></pre><p>O objetivo com esse sistema todo é reunir o máximo de informações processar todos os dados filtrando apenas anomalias entre os endpoints e então realizar a investigação manual usando ZAPROXY nos candidatos que possuem maior nível de entropia.</p></div></article></main><footer class="footer"><div class="footer__inner"><div class="footer__copyright"><p>© 2024 Powered by Publii CMS :: <a href="https://github.com/panr/hugo-theme-terminal" target="_blank" rel="noopener">Theme</a> ported by the <a href="https://getpublii.com/customization-service/" target="_blank" rel="noopener">Publii Team</a></p></div></div></footer></div><script defer="defer" src="https://nathan.tec.br/assets/js/scripts.min.js?v=c2232aa7558e9517946129d2a1b8c770"></script><script>window.publiiThemeMenuConfig={mobileMenuMode:'sidebar',animationSpeed:300,submenuWidth: 'auto',doubleClickTime:500,mobileMenuExpandableSubmenus:true,relatedContainerForOverlayMenuSelector:'.top'};</script><script>var images = document.querySelectorAll('img[loading]');
         for (var i = 0; i < images.length; i++) {
             if (images[i].complete) {
                 images[i].classList.add('is-loaded');
