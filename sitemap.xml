@@ -25,6 +25,10 @@
 </image:image>
 </url>
 <url>
+<loc>https://nathan.tec.br/criacao-da-imagem-qcow2-base-para-o-lab.html</loc>
+<lastmod>2026-08-10T22:00:24-04:00</lastmod>
+</url>
+<url>
 <loc>https://nathan.tec.br/fuzzer-de-aplicacoes-web-baseado-em-curl-automatizado-via-bash.html</loc>
 <lastmod>2026-07-27T22:19:10-04:00</lastmod>
 <image:image>
@@ -37,8 +41,12 @@
 <lastmod>2026-07-14T19:27:50-04:00</lastmod>
 </url>
 <url>
+<loc>https://nathan.tec.br/infraestrutura-corporativa-miniaturizada-em-ambiente-qemu-2.html</loc>
+<lastmod>2026-08-10T21:53:34-04:00</lastmod>
+</url>
+<url>
 <loc>https://nathan.tec.br/infraestrutura-corporativa-miniaturizada-em-ambiente-qemu.html</loc>
-<lastmod>2026-07-29T22:00:08-04:00</lastmod>
+<lastmod>2026-08-10T21:48:02-04:00</lastmod>
 <image:image>
 <image:loc>https://nathan.tec.br/media/posts/6/arquitetura.png</image:loc>
 <image:title><![CDATA[]]></image:title>
