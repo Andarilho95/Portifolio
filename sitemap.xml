@@ -25,6 +25,18 @@
 </image:image>
 </url>
 <url>
+<loc>https://nathan.tec.br/c.html</loc>
+<lastmod>2026-08-20T17:06:56-04:00</lastmod>
+<image:image>
+<image:loc>https://nathan.tec.br/media/posts/14/diagrama-2.png</image:loc>
+<image:title><![CDATA[]]></image:title>
+</image:image>
+<image:image>
+<image:loc>https://nathan.tec.br/media/posts/14/2026-08-18_21-18.png</image:loc>
+<image:title><![CDATA[]]></image:title>
+</image:image>
+</url>
+<url>
 <loc>https://nathan.tec.br/criacao-da-imagem-qcow2-base-para-o-lab.html</loc>
 <lastmod>2026-08-10T22:00:24-04:00</lastmod>
 </url>
@@ -42,7 +54,7 @@
 </url>
 <url>
 <loc>https://nathan.tec.br/infraestrutura-corporativa-miniaturizada-em-ambiente-qemu-2.html</loc>
-<lastmod>2026-08-12T20:17:28-04:00</lastmod>
+<lastmod>2026-08-20T17:09:37-04:00</lastmod>
 </url>
 <url>
 <loc>https://nathan.tec.br/infraestrutura-corporativa-miniaturizada-em-ambiente-qemu.html</loc>
@@ -106,7 +118,7 @@
 </url>
 <url>
 <loc>https://nathan.tec.br/routergateway-roteamento-nat-e-acesso-a-internet.html</loc>
-<lastmod>2026-08-12T20:28:59-04:00</lastmod>
+<lastmod>2026-08-20T16:53:08-04:00</lastmod>
 <image:image>
 <image:loc>https://nathan.tec.br/media/posts/13/2026-08-12_19-06.png</image:loc>
 <image:title><![CDATA[]]></image:title>
